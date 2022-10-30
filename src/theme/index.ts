@@ -17,6 +17,10 @@ const theme: Theme = {
       color: "primary",
       fontFamily: "body",
     },
+    monospace: {
+      color: "primary",
+      fontFamily: "monospace",
+    },
     secondary: {
       color: "secondary",
       fontFamily: "body",
@@ -40,8 +44,24 @@ const theme: Theme = {
       },
     },
     secondary: {
-      color: "background",
-      bg: "secondary",
+      color: "primary",
+      bg: "background",
+      borderColor: "primary",
+      borderWidth: "1px",
+      borderStyle: "solid",
+      "&:hover": {
+        bg: "primary",
+        color: "background",
+      },
+      "&:active": {
+        color: "primary",
+        bg: "tertiary",
+      },
+    },
+    disabled: {
+      color: "secondary",
+      bg: "tertiary",
+      cursor: "not-allowed",
     },
   },
 };

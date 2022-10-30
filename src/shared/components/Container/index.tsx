@@ -9,7 +9,7 @@ const Container: React.FC<BoxProps> = ({ children, ...props }) => {
     <Box
       px={SHARED_PADDING}
       mx="auto"
-      sx={{ position: "relative", maxWidth: 1280, width: "100%" }}
+      sx={{ position: "relative", maxWidth: 1440, width: "100%" }}
       {...props}
     >
       <Flex

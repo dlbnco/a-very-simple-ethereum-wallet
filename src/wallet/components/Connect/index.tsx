@@ -1,3 +1,4 @@
+import { useSessionStorageValue } from "@react-hookz/web";
 import { Box, Button, Input, Label, Text } from "@theme-ui/components";
 import Wallet from "ethereumjs-wallet";
 import { useRouter } from "next/router";
@@ -5,15 +6,17 @@ import React, { useCallback, useState } from "react";
 
 const Connect: React.FC = () => {
   const router = useRouter();
-  const [privateKey, setPrivateKey] = useState<string>("");
+  const [input, setInput] = useState<string>("");
+  const [sessionPrivateKey, setSessionPrivateKey] =
+    useSessionStorageValue<string>("privateKey", "");
   const [error, setError] = useState<any>(null);
 
   const onChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (error != null) setError(null);
-      setPrivateKey(e.target.value);
+      setInput(e.target.value);
     },
-    [setPrivateKey, error]
+    [setSessionPrivateKey, error]
   );
 
   const onClick = useCallback(() => {
@@ -22,14 +25,14 @@ const Connect: React.FC = () => {
        * Tries to initialize the wallet before proceeding;
        * Throws if there's something wrong with the private key.
        */
-      const wallet = Wallet.fromPrivateKey(Buffer.from(privateKey, "hex"));
-      sessionStorage.setItem("privateKey", privateKey);
+      const wallet = Wallet.fromPrivateKey(Buffer.from(input, "hex"));
+      setSessionPrivateKey(input);
       router.push(`/wallet?address=${wallet.getAddressString()}`);
     } catch (e) {
       console.error(e);
       setError(e);
     }
-  }, [privateKey, router]);
+  }, [sessionPrivateKey, router]);
 
   return (
     <Box>
@@ -38,7 +41,7 @@ const Connect: React.FC = () => {
           Private key
         </Text>
         <Input
-          value={privateKey}
+          value={input}
           onChange={onChangeInput}
           sx={{ display: "block" }}
         />

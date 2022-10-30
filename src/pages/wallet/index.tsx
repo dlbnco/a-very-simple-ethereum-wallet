@@ -1,11 +1,14 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import qs from "qs";
-import etherScanHandler from "../etherscan/handler";
+import alchemyHandler from "../../alchemy/handler";
+import etherScanHandler from "../../etherscan/handler";
 
-import Container from "../shared/components/Container";
+import Container from "../../shared/components/Container";
+import Navigation from "../../wallet/components/Navigation";
 
-import Summary from "../wallet/components/Summary";
+import Summary from "../../wallet/components/Summary";
+import Tokens from "../../wallet/components/Tokens";
 
 interface Props {
   balance: string;
@@ -18,7 +21,9 @@ const WalletPage = (props: Props) => {
   if (address == null) return null;
   return (
     <Container>
-      <Summary balance={props.balance} address={address} />
+      <Summary balance={props.balance} address={address} mb={3} />
+      <Navigation mb={4} />
+      <Tokens />
     </Container>
   );
 };
@@ -37,11 +42,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   const { address } = qs.parse(url.split("?")[1], {
     ignoreQueryPrefix: true,
   });
-  const balance = await etherScanHandler({
-    module: "account",
-    action: "balance",
-    address,
-    tag: "latest",
+  const balance = await alchemyHandler({
+    params: [address, "latest"],
+    method: "eth_getBalance",
   });
   return {
     props: {
