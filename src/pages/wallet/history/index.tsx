@@ -169,7 +169,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
         withMetadata: true,
         excludeZeroValue: false,
         maxCount: "0x" + (ITEMS_PER_PAGE * Number(page ?? "1")).toString(16),
-        fromAddress: "0x1370fcff4a5f7ac959d513c8db0e8acf223dccc3",
+        fromAddress: address,
         order: "desc",
       },
     ],
