@@ -2,7 +2,6 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import qs from "qs";
 import alchemyHandler from "../../alchemy/handler";
-import etherScanHandler from "../../etherscan/handler";
 
 import Container from "../../shared/components/Container";
 import Navigation from "../../wallet/components/Navigation";
