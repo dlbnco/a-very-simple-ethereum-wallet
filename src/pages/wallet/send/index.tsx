@@ -187,7 +187,7 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
       return erc20Balance?.gte(amount ?? 0) && ethBalance.gte(fee);
     }
     return ethBalance.gte(new BigNumber(amount ?? 0).plus(fee));
-  }, [amount, fee, ethBalance]);
+  }, [amount, fee, ethBalance, erc20Balance, token]);
 
   const canSubmit =
     hasEnoughBalance &&
@@ -213,7 +213,7 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
           })}
         </Text>
       )}
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} sx={{ minWidth: [320, 480] }}>
         <Label sx={{ flexDirection: "column" }} mb={3}>
           <Text sx={{ mb: 1 }}>Amount</Text>
           <Input
@@ -250,7 +250,9 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
           />
         </Label>
         <Text sx={{ display: "block" }} mb={3}>
-          Estimated fee: {formatCryptoCurrency({ value: fee, symbol: "eth" })}
+          Estimated fee:
+          <br />
+          {formatCryptoCurrency({ value: fee, symbol: "eth" })}
         </Text>
         {error?.message != null && (
           <Text sx={{ display: "block" }} my={3}>

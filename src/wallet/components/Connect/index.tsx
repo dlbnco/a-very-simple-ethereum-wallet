@@ -12,6 +12,7 @@ const Connect: React.FC = () => {
     ""
   );
   const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +25,7 @@ const Connect: React.FC = () => {
   const onSubmit = useCallback(
     (e: FormEvent<HTMLDivElement>) => {
       e.preventDefault();
+      setIsLoading(true);
       try {
         /**
          * Tries to initialize the wallet before proceeding;
@@ -34,9 +36,11 @@ const Connect: React.FC = () => {
         router.push(`/wallet?address=${wallet.getAddressString()}`);
       } catch (e) {
         setError(e);
+      } finally {
+        setIsLoading(false);
       }
     },
-    [router, input, setSessionPrivateKey]
+    [router, input, setSessionPrivateKey, setIsLoading]
   );
 
   return (
@@ -51,6 +55,7 @@ const Connect: React.FC = () => {
             onChange={onChangeInput}
             sx={{ display: "block" }}
             data-testid="privateKey-input"
+            required
           />
         </Label>
         {error?.message != null && (
