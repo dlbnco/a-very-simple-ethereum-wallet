@@ -259,6 +259,11 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
             {error.message}
           </Text>
         )}
+        {hasEnoughBalance === false && (
+          <Text sx={{ display: "block" }} my={3}>
+            No enough balance to perform this transaction
+          </Text>
+        )}
         <Button
           variant={canSubmit ? undefined : "disabled"}
           disabled={!canSubmit}
