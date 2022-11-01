@@ -19,6 +19,7 @@ const Container: React.FC<BoxProps> = ({ children, ...props }) => {
           display: "inline-flex",
           flexDirection: "column",
           alignItems: "flex-start",
+          width: "100%",
         }}
       >
         {children}

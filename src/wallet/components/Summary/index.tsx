@@ -15,11 +15,20 @@ const Summary: React.FC<Props & BoxProps> = ({
   ...props
 }) => {
   return (
-    <Box {...props}>
+    <Box sx={{ width: "100%", overflow: "hidden" }} {...props}>
       <Text sx={{ fontSize: [5, null, null, 6] }} mb={3}>
         {formatCryptoCurrency({ value: fromWei(balance), symbol: "eth" })}
       </Text>
-      <Text as="p" variant="monospace" sx={{ fontSize: 2, color: "secondary" }}>
+      <Text
+        as="p"
+        variant="monospace"
+        sx={{
+          fontSize: 2,
+          color: "secondary",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
         {address}
       </Text>
     </Box>
