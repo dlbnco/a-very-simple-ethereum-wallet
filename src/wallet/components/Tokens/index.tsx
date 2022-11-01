@@ -1,4 +1,7 @@
 import BigNumber from "bignumber.js";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import qs from "qs";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Text,
@@ -96,6 +99,8 @@ const TokenItem: React.FC<
   balance,
   ...props
 }) => {
+    const router = useRouter();
+    const query = qs.stringify({ ...router.query, contract: address });
     const removeToken = useCallback(() => {
       onRemove(address);
     }, [onRemove, address]);
@@ -129,12 +134,26 @@ const TokenItem: React.FC<
         >
           {address}
         </Text>
+        <Link
+          href={`/wallet/send?${query}`}
+          sx={{
+            mb: 1,
+            fontSize: 0,
+            textDecoration: "none",
+            ":hover": {
+              textDecoration: "underline",
+            },
+          }}
+        >
+          <Text>send</Text>
+        </Link>
         <Text
           role="button"
           onClick={removeToken}
           sx={{
             color: "secondary",
             mb: 1,
+            ml: 1,
             fontSize: 0,
             cursor: "pointer",
             ":hover": {

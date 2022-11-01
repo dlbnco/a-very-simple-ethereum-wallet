@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import React from "react";
 import formatCryptoCurrency from "../../utils/formatCryptoCurrency";
-import fromWei from "../../utils/fromWei";
+import { fromWei } from "../../utils/units";
 import { Box, BoxProps, Text } from "theme-ui";
 
 interface Props {

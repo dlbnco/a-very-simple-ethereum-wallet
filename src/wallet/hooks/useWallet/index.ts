@@ -22,6 +22,7 @@ const useWallet = () => {
   }, []);
   return {
     wallet,
+    privateKey: wallet?.getPrivateKeyString(),
     address: wallet?.getAddressString(),
   };
 };
