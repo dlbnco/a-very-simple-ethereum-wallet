@@ -1,8 +1,30 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+### Requirements
+
+- Node.js 14.6.0 or newer
+- Yarn
+- [Alchemy API key](https://www.alchemy.com)
+
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies:
+
+```bash
+yarn
+```
+
+Set your Alchemy API key:
+
+1. Create a `.env.local` file with the following contents:
+
+```env
+ALCHEMY_API_KEY=your-key
+```
+
+More info on [environment variables](https://nextjs.org/docs/basic-features/environment-variables)
+
+Then, run the development server:
 
 ```bash
 npm run dev
