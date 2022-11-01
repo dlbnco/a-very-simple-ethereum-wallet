@@ -43,20 +43,25 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
+  const [hash, setHash] = useState<string>();
 
   const onInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const name = e.target.name;
       if (error != null) setError(null);
       if (success) setSuccess(false);
+      if (hash) setHash(undefined);
       setInput({
         ...input,
         [name]: e.target.value,
       });
     },
-    [setInput, input, error, setError, success, setSuccess]
+    [setInput, input, error, setError, success, setSuccess, hash, setHash]
   );
 
+  /**
+   * On load, fetch the current gas price.
+   */
   useEffect(() => {
     (async () => {
       const result = await fetch(`/api/alchemy`, {
@@ -92,7 +97,9 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
       setIsLoading(true);
       if (error != null) setError(null);
       if (success) setSuccess(false);
+      if (hash) setHash(undefined);
       try {
+        // Fetch the address nonce.
         const nonceResult = await fetch(`/api/alchemy`, {
           method: "POST",
           body: JSON.stringify({
@@ -104,6 +111,7 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
         if (privateKey == null) throw new Error("privateKey must be defined");
         let tx: Buffer;
         if (token != null) {
+          // In case we're sending a ERC20 token, load the contract.
           const Contract = require("web3-eth-contract");
           const contract = new Contract(JSON.parse(erc20), contractAddress, {
             from: address,
@@ -124,6 +132,7 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
               .encodeABI(),
           });
         } else {
+          // Otherwise, do a regular Ether transaction.
           tx = buildTx(privateKey.slice(2), {
             nonce: nonce.result,
             to: to,
@@ -143,6 +152,7 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
         if (transaction.error != null)
           throw new Error(transaction.error.message);
         setSuccess(true);
+        setHash(transaction.result);
       } catch (e: any) {
         setError(e);
       } finally {
@@ -163,6 +173,8 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
       gasLimit,
       token,
       contractAddress,
+      hash,
+      setHash,
     ]
   );
 
@@ -256,6 +268,11 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
       {success && (
         <Text sx={{ display: "block", fontWeight: "bold" }} my={3}>
           Transaction sent 🎈
+        </Text>
+      )}
+      {hash && (
+        <Text variant="monospace" sx={{ display: "block", color: "secondary" }}>
+          {hash}
         </Text>
       )}
     </Container>
