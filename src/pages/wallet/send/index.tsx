@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { NextPage } from "next";
-import React, {
+import {
   ChangeEvent,
   FormEvent,
   useCallback,
@@ -9,7 +9,6 @@ import React, {
   useState,
 } from "react";
 import { Text, Input, Label, Button } from "theme-ui";
-import alchemyHandler from "../../../alchemy/handler";
 import Container from "../../../shared/components/Container";
 import BackButton from "../../../wallet/components/BackButton";
 import useWallet from "../../../wallet/hooks/useWallet";
@@ -60,9 +59,13 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
 
   useEffect(() => {
     (async () => {
-      const gasPrice = await alchemyHandler({
-        method: "eth_gasPrice",
+      const result = await fetch(`/api/alchemy`, {
+        method: "POST",
+        body: JSON.stringify({
+          method: "eth_gasPrice",
+        }),
       });
+      const gasPrice = await result.json();
       setInput({
         ...input,
         [FormFields.gasPrice]: parseInt(gasPrice.result, 16).toString(),
@@ -90,10 +93,14 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
       if (error != null) setError(null);
       if (success) setSuccess(false);
       try {
-        const nonce = await alchemyHandler({
-          method: "eth_getTransactionCount",
-          params: [address, "latest"],
+        const nonceResult = await fetch(`/api/alchemy`, {
+          method: "POST",
+          body: JSON.stringify({
+            method: "eth_getTransactionCount",
+            params: [address, "latest"],
+          }),
         });
+        const nonce = await nonceResult.json();
         if (privateKey == null) throw new Error("privateKey must be defined");
         let tx: Buffer;
         if (token != null) {
@@ -125,11 +132,16 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
             gasLimit: `0x${new BigNumber(gasLimit ?? 0).toString(16)}`,
           });
         }
-        const result = await alchemyHandler({
-          method: "eth_sendRawTransaction",
-          params: [`0x${tx.toString("hex")}`],
+        const result = await fetch(`/api/alchemy`, {
+          method: "POST",
+          body: JSON.stringify({
+            method: "eth_sendRawTransaction",
+            params: [`0x${tx.toString("hex")}`],
+          }),
         });
-        if (result.error != null) throw new Error(result.error.message);
+        const transaction = await result.json();
+        if (transaction.error != null)
+          throw new Error(transaction.error.message);
         setSuccess(true);
       } catch (e: any) {
         setError(e);
