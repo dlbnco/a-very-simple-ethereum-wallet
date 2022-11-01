@@ -31,7 +31,7 @@ enum FormFields {
 const initialState = (token: boolean) => ({
   [FormFields.amount]: "0",
   [FormFields.to]: "",
-  [FormFields.gasPrice]: "",
+  [FormFields.gasPrice]: "0",
   [FormFields.gasLimit]: token ? "100000" : "21000",
 });
 
