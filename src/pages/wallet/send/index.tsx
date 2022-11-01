@@ -116,6 +116,7 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
           const contract = new Contract(JSON.parse(erc20), contractAddress, {
             from: address,
           });
+          // Build a contract transfer.
           tx = buildTx(privateKey.slice(2), {
             nonce: nonce.result,
             to: contractAddress,
@@ -132,7 +133,7 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
               .encodeABI(),
           });
         } else {
-          // Otherwise, do a regular Ether transaction.
+          // Otherwise, build a regular Ether transaction.
           tx = buildTx(privateKey.slice(2), {
             nonce: nonce.result,
             to: to,
@@ -141,6 +142,7 @@ const SendPage: NextPage<WalletProps> = ({ balance, token, tokenBalance }) => {
             gasLimit: `0x${new BigNumber(gasLimit ?? 0).toString(16)}`,
           });
         }
+        // Broadcast the transaction via Alchemy.
         const result = await fetch(`/api/alchemy`, {
           method: "POST",
           body: JSON.stringify({
